@@ -43,8 +43,8 @@ class GLOBALP
   private:
     enum 
     {
-        TABLESIZE = 1,
-        BUNDLESIZE = 1,
+        TABLESIZE = 1,   // Shrink predicition table to one entry
+        BUNDLESIZE = 1,  // Shrink predicition table to one entry
         MAXTHREADS = 100
     };
 
@@ -75,7 +75,7 @@ inline VOID GLOBALP::Instruction(INS ins, VOID *v)
 inline INT8 * GLOBALP::HistAddress(INS ins)
 {
     ADDRINT ip = INS_Address(ins);
-    
+    // return constant adress because BUDLESIZE and Table size is 1 
     return &(_branchHistory[(ip / BUNDLESIZE) % TABLESIZE][ip % BUNDLESIZE]);
 }
 
@@ -84,21 +84,21 @@ VOID * ip, BOOL taken)
 {
     INT8 history;
 
-    bm->_references++;
+    bm->_references++; // increment number of branches 
   
-    history = *branchHistory & 0x3;
-    bm->_predicts += (taken && history >= 2);
-    bm->_predicts += (!taken && history <= 1);
+    history = *branchHistory & 0x3;              // ignore all but ls 2 bits
+    bm->_predicts += (taken && history >= 2);    // correctly predits taken
+    bm->_predicts += (!taken && history <= 1);   // correclty predicts not taken  
 
     INT8 delta = 0;
-    if (taken && history < 3)
+    if (taken && history < 3)  // move twoards more strongly taken 
     {
         delta = 1;
     }
-    if (!taken && history > 0)
+    if (!taken && history > 0) // move twords more strongly not taken
     {
         delta = -1;
     }
   
-    *branchHistory += delta;
+    *branchHistory += delta; // ajust global prediction buffer
 }

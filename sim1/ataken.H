@@ -71,10 +71,10 @@ inline VOID ATAKEN::Instruction(INS ins, VOID *v)
 
 inline VOID ATAKEN::CondBranch(ATAKEN *bm, BOOL taken)
 {
-    bm->_references++;
+    bm->_references++;       // increment number of branches 
     if(taken)
     {
-        bm->_predicts++;
+        bm->_predicts++;     // increment correct number of branches if branch taken
     }
  
 }

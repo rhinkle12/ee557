@@ -43,7 +43,7 @@ class BIMODAL
   private:
     enum 
     {
-        TABLESIZE = 32,
+        TABLESIZE = 32, // 2^32 = 5 selects bottom 5 bits when bundle is 1
         BUNDLESIZE = 1,
         MAXTHREADS = 100
     };
@@ -84,21 +84,21 @@ VOID * ip, BOOL taken)
 {
     INT8 history;
 
-    bm->_references++;
+    bm->_references++; // increment number of branches
   
     history = *branchHistory & 0x3;
-    bm->_predicts += (taken && history >= 2);
-    bm->_predicts += (!taken && history <= 1);
+    bm->_predicts += (taken && history >= 2); // increment correct number of branches if branch taken
+    bm->_predicts += (!taken && history <= 1);// correclty predicts not taken
 
     INT8 delta = 0;
-    if (taken && history < 3)
+    if (taken && history < 3) // move twoards more strongly taken
     {
         delta = 1;
     }
-    if (!taken && history > 0)
+    if (!taken && history > 0) // move twords more strongly not taken
     {
         delta = -1;
     }
   
-    *branchHistory += delta;
+    *branchHistory += delta; // ajust adress specific prediction buffer
 }

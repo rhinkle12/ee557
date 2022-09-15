@@ -43,8 +43,8 @@ class CORRELATED
   private:
     enum 
     {
-        ADRESSSPACE = 16,
-        HISTORY = 16,
+        ADRESSSPACE = 16, //4 bits for pc
+        HISTORY = 16, // 4 bits for global history
         BUNDLESIZE = 1,
         MAXTHREADS = 100
     };
@@ -78,7 +78,7 @@ inline VOID CORRELATED::Instruction(INS ins, VOID *v)
 inline INT8 * CORRELATED::HistAddress(INS ins)
 {
     ADDRINT ip = (INS_Address(ins) & 0xf)  | ((0xf & global_history)<<4); 
-
+    // locates correct position in branch prediction buffer top 4 bits global history bottom 4 bits PC
     return &(_branchHistory[ip][0]);
 }
 
@@ -87,34 +87,34 @@ VOID * ip, BOOL taken)
 {
     INT8 history;
 
-    bm->_references++;
+    bm->_references++; // inc number of branches taken
   
-    history = *branchHistory & 0x3;
-    bm->_predicts += (taken && history >= 2);
-    bm->_predicts += (!taken && history <= 1);
+    history = *branchHistory & 0x3; // mask hitory only bottom two bits
+    bm->_predicts += (taken && history >= 2); // correctly predits taken
+    bm->_predicts += (!taken && history <= 1); // correclty predicts not taken
 
     INT8 delta = 0;
-    if (taken && history < 3)
+    if (taken && history < 3) // move twoards more strongly taken
     {
         delta = 1;
     }
-    if (!taken && history > 0)
+    if (!taken && history > 0) // move twords more strongly not taken
     {
         delta = -1;
     }
     
     if(taken)
     {
-        bm->global_history = (bm->global_history<<1) | 0x1;;
+        bm->global_history = (bm->global_history<<1) | 0x1;; // modify global history if taken
     }
     else
     {
-        bm->global_history = bm->global_history<<1;
+        bm->global_history = bm->global_history<<1; // modify global history if not taken
     }
      
 
 
 
   
-    *branchHistory += delta;
+    *branchHistory += delta; // update buffer
 }
