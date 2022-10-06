@@ -1,0 +1,42 @@
+-seed                             1 
+-nice                             0 
+-max:inst                         0 
+-fastfwd                          0 
+-fetch:ifqsize                    4 
+-fetch:mplat                      3 
+-fetch:speed                      1 
+-bpred                         2lev 
+-bpred:bimod           2048 
+-bpred:2lev            1 1024 8 0 
+-bpred:comb            1024 
+-bpred:ras                        8 
+-bpred:btb             128 2 
+-decode:width                     4 
+-issue:width                      4 
+-issue:inorder                false 
+-issue:wrongpath               true 
+-commit:width                     4 
+-ruu:size                         8 
+-lsq:size                         16 
+-cache:dl1             dl1:32:64:4:l 
+-cache:dl1lat                     2 
+-cache:dl2             ul2:512:128:8:l 
+-cache:dl2lat                     3 
+-cache:il1             il1:64:64:2:f 
+-cache:il1lat                     2 
+-cache:il2                      dl2 
+-cache:il2lat                     3 
+-cache:flush                  false 
+-cache:icompress              false 
+-mem:lat               100 20 
+-mem:width                        8 
+-tlb:itlb              itlb:16:4096:4:l 
+-tlb:dtlb              dtlb:32:4096:4:l 
+-tlb:lat                         100 
+-res:ialu                         1 
+-res:imult                        1 
+-res:memport                      2 
+-res:fpalu                        1 
+-res:fpmult                       1 
+-bugcompat                    false 
+
